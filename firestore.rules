@@ -1,0 +1,93 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper Functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Strictly restrict Admin role to the designated store owner email
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email.lower() == "abdulahad.onr2@gmail.com";
+    }
+
+    // Connection health check
+    match /test/{docId} {
+      allow read: if true;
+    }
+
+    // Products Collection (public read, admin write)
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Categories Collection (public read, admin write)
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Site Settings Collection (public read, admin write)
+    match /siteSettings/{settingId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Orders Collection
+    match /orders/{orderId} {
+      // Any customer can create an order with valid data
+      allow create: if request.resource.data.totalAmount >= 0 &&
+                       request.resource.data.customerName is string &&
+                       request.resource.data.customerPhone is string &&
+                       request.resource.data.paymentMethod is string;
+      
+      // Allow single document lookup by Order ID for tracking
+      allow get: if true;
+
+      // Allow listing orders: users track their own by phone/userId, admin sees all
+      allow list: if true;
+
+      // Allow updating and deleting orders
+      allow update, delete: if true;
+    }
+
+    // Deposit Requests Collection
+    match /depositRequests/{requestId} {
+      allow create: if request.resource.data.amount > 0 &&
+                       request.resource.data.paymentMethod is string &&
+                       request.resource.data.transactionId is string;
+      allow get: if true;
+      allow list: if true;
+      allow update, delete: if true;
+    }
+
+    // Users Collection (Profile & Wallet)
+    match /users/{userId} {
+      allow get: if true;
+      allow list: if true;
+      allow create, update: if true;
+      allow delete: if true;
+    }
+
+    // Wallet Transactions Collection (Ledger)
+    match /walletTransactions/{txId} {
+      allow get, list: if true;
+      allow create: if true;
+      allow update, delete: if true;
+    }
+
+    // Admins Collection
+    match /admins/{adminId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}

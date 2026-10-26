@@ -1,0 +1,96 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Digital game top-up or gift card product",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 150 },
+        "subtitle": { "type": "string", "maxLength": 200 },
+        "categoryId": { "type": "string", "maxLength": 100 },
+        "categoryName": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "imageUrl": { "type": "string", "maxLength": 500 },
+        "basePrice": { "type": "number" },
+        "oldPrice": { "type": "number" },
+        "stock": { "type": "number" },
+        "isFeatured": { "type": "boolean" },
+        "isPopular": { "type": "boolean" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["name", "categoryId", "basePrice", "isActive"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Product category such as Game Top-Up or Digital Gift Cards",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "nameBn": { "type": "string", "maxLength": 100 },
+        "slug": { "type": "string", "maxLength": 100 },
+        "icon": { "type": "string", "maxLength": 50 },
+        "isActive": { "type": "boolean" },
+        "order": { "type": "number" }
+      },
+      "required": ["name", "slug", "isActive"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order with selected game package, player credentials and transaction info",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "customerPhone": { "type": "string", "maxLength": 30 },
+        "customerEmail": { "type": "string", "maxLength": 120 },
+        "totalAmount": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["bKash", "Nagad", "Rocket", "SSBD Wallet"] },
+        "transactionId": { "type": "string", "maxLength": 100 },
+        "paymentStatus": { "type": "string", "enum": ["Pending", "Paid", "Failed", "Refunded"] },
+        "orderStatus": { "type": "string", "enum": ["Pending", "Confirmed", "Processing", "Delivered", "Completed", "Cancelled", "Refunded"] }
+      },
+      "required": ["customerName", "customerPhone", "totalAmount", "paymentMethod", "paymentStatus", "orderStatus"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Store contact details, bKash/Nagad payment numbers and hero copy",
+      "type": "object",
+      "properties": {
+        "storeName": { "type": "string", "maxLength": 100 },
+        "heroTitle": { "type": "string", "maxLength": 200 },
+        "bkashNumber": { "type": "string", "maxLength": 30 },
+        "nagadNumber": { "type": "string", "maxLength": 30 },
+        "rocketNumber": { "type": "string", "maxLength": 30 }
+      },
+      "required": ["storeName"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "All digital games, top-ups and gift cards"
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Product categories"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Customer orders and payment records"
+    },
+    "/siteSettings/{settingId}": {
+      "schema": { "$ref": "#/entities/SiteSettings" },
+      "description": "Store branding and MFS payment numbers"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/SiteSettings" },
+      "description": "Registered admin IDs"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "User profile and wallet ledger"
+    }
+  }
+}

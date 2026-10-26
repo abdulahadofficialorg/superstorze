@@ -1,0 +1,6 @@
+{
+  "name": "Super Storez BD",
+  "description": "বাংলাদেশের নির্ভরযোগ্য ডিজিটাল গেমিং শপ ও ইনস্ট্যান্ট টপআপ মার্কেটপ্লেস। Free Fire, PUBG, Steam, Google Play ভাউচার ও গিফট কার্ড।",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
